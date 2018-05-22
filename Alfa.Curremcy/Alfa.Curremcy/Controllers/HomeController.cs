@@ -1,32 +1,39 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Diagnostics;
-using System.Linq;
-using System.Threading.Tasks;
-using Microsoft.AspNetCore.Mvc;
+﻿using System.Diagnostics;
+using Alfa.Curremcy.Managers.Abstract;
 using Alfa.Curremcy.Models;
+using Microsoft.AspNetCore.Mvc;
 
 namespace Alfa.Curremcy.Controllers
 {
     public class HomeController : Controller
     {
+        private readonly ICurrencyManager _currencyManager;
+
+        public HomeController(ICurrencyManager currencyManager)
+        {
+            _currencyManager = currencyManager;
+        }
+
         public IActionResult Index()
         {
-            return View();
+            var model = _currencyManager.GetCurrencyViewModel();
+
+            return View(model);
         }
 
-        public IActionResult About()
+        [HttpPost]
+        public IActionResult GetSelected(string selectedCurrencyId)
         {
-            ViewData["Message"] = "Your application description page.";
+            var value = _currencyManager.GetCurrencyValueById(selectedCurrencyId);
 
-            return View();
-        }
-
-        public IActionResult Contact()
-        {
-            ViewData["Message"] = "Your contact page.";
-
-            return View();
+            return Json(new
+            {
+                Success = "true",
+                Data = new 
+                {
+                    Value = value
+                }
+            });
         }
 
         public IActionResult Error()
