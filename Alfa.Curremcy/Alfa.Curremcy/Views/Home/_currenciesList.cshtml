@@ -1,0 +1,24 @@
+﻿@model IEnumerable<CurrencyViewModel>
+
+<div>
+    <div>
+        <div class="row">
+            <div class="col-md-1">Код</div>
+            <div class="col-md-1">Номинал</div>
+            <div class="col-md-1 currency-name">Наименование</div>
+            <div class="col-md-1">Значение</div>
+            <div class="col-md-1 currency-previous-value">Прошлое значение</div>
+        </div>
+        @foreach (var currency in Model)
+        {
+            <div class="row">
+                <div class="col-md-1">@currency.CharCode</div>
+                <div class="col-md-1">@currency.Nominal</div>
+                <div class="col-md-1 currency-name">@currency.Name</div>
+                <div class="col-md-1">@currency.Value</div>
+                <div class="col-md-1 currency-previous-value">@currency.PreviousValue</div>
+            </div>
+        }
+    </div>
+</div>
+

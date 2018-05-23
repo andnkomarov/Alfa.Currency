@@ -1,10 +1,12 @@
-﻿using Alfa.Curremcy.Config;
+﻿using System.Reflection;
+using Alfa.Curremcy.Config;
 using Alfa.Curremcy.Managers;
 using Alfa.Curremcy.Managers.Abstract;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using AutoMapper;
 
 namespace Alfa.Curremcy
 {
@@ -21,6 +23,8 @@ namespace Alfa.Curremcy
         public void ConfigureServices(IServiceCollection services)
         {
             services.AddMvc();
+
+            services.AddAutoMapper(Assembly.GetEntryAssembly());
 
             services.AddOptions();
             services.Configure<AlfaCurrencyConfig>(Configuration.GetSection(nameof(AlfaCurrencyConfig)));

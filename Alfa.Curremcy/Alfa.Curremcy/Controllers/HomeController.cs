@@ -16,7 +16,7 @@ namespace Alfa.Curremcy.Controllers
 
         public IActionResult Index()
         {
-            var model = _currencyManager.GetCurrencyViewModel();
+            var model = _currencyManager.GetCurrencyListViewModel();
 
             return View(model);
         }

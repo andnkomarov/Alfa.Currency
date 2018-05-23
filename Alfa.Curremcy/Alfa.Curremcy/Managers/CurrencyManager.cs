@@ -4,7 +4,8 @@ using System.Net;
 using Alfa.Curremcy.Config;
 using Alfa.Curremcy.Managers.Abstract;
 using Alfa.Curremcy.Models;
-using Microsoft.AspNetCore.Mvc.Rendering;
+using Alfa.Curremcy.Models.BusinessModels;
+using AutoMapper;
 using Microsoft.Extensions.Options;
 using Newtonsoft.Json;
 
@@ -13,54 +14,44 @@ namespace Alfa.Curremcy.Managers
     public class CurrencyManager : ICurrencyManager
     {
         private readonly IOptions<AlfaCurrencyConfig> _config;
+        private readonly IMapper _mapper;
 
-        public CurrencyManager(IOptions<AlfaCurrencyConfig> config)
+        private const string CannotFindSelectedCurrency = "Не удалось найти выбранную валюту";
+        private const string CurrencyListIsEmpty = "Списки валют пусты";
+
+        public CurrencyManager(IOptions<AlfaCurrencyConfig> config,
+            IMapper mapper)
         {
             _config = config;
+            _mapper = mapper;
         }
-        
-        public CurrencySetViewModel GetCurrencyViewModel()
+
+        public CurrencyListViewModel GetCurrencyListViewModel()
         {
-            var currencyViewModel = GetCurrencies();
+            var currencies = GetCurrencies();
 
-            var tmpList = currencyViewModel.Valute.Values.Select(currency => new SelectListItem
-            {
-                Value = currency.Id,
-                Text = currency.CharCode
-            }).ToList();
-
-            currencyViewModel.Currencies2 = tmpList;
-
-            return currencyViewModel;
+            return _mapper.Map<CurrencyListViewModel>(currencies);
         }
 
         public decimal GetCurrencyValueById(string id)
         {
-            var currencyViewModel = GetCurrencies();
+            var currencies = GetCurrencies();
 
-            var currencyValue = currencyViewModel.Valute.Values.FirstOrDefault(v => v.Id == id);
+            var currencyValue = currencies.Valute.Values.FirstOrDefault(v => v.Id == id);
 
-            return currencyValue?.Value ?? throw new Exception("Не удалось найти выбранную валюту");
+            return currencyValue?.Value ?? throw new Exception(CannotFindSelectedCurrency);
         }
 
-        private CurrencySetViewModel GetCurrencies()
+        private CurrenciesList GetCurrencies()
         {
-            try
-            {
-                var currencyString = DownloadCurrencyString(_config.Value.CurrencySourceUrl);
-                
-                if (string.IsNullOrEmpty(currencyString))
-                {
-                    throw new Exception("Списки валют пусты");
-                }
+            var currencyString = DownloadCurrencyString(_config.Value.CurrencySourceUrl);
 
-                return JsonConvert.DeserializeObject<CurrencySetViewModel>(currencyString);
-            }
-            catch (Exception e)
+            if (string.IsNullOrEmpty(currencyString))
             {
-                Console.WriteLine(e);
-                throw;
+                throw new Exception(CurrencyListIsEmpty);
             }
+
+            return JsonConvert.DeserializeObject<CurrenciesList>(currencyString);
         }
 
         private string DownloadCurrencyString(string url)

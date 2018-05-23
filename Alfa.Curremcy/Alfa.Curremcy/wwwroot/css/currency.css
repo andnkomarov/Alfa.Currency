@@ -1,0 +1,22 @@
+﻿.currency-name {
+    max-width: 400px;
+    width: 100%;
+}
+
+.currency-previous-value {
+    max-width: 250px;
+    width: 100%;
+}
+
+.currency-select {
+    margin: 5px 5px 20px 0;
+}
+
+.selected-currency-value {
+    height: 20px;
+    width: 57px;
+}
+
+.select-currency {
+    margin-top: 10px;
+}

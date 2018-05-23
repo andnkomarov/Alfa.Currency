@@ -1,8 +1,13 @@
-﻿
-namespace Alfa.Curremcy.Models
+﻿using Newtonsoft.Json;
+
+namespace Alfa.Curremcy.Models.BusinessModels
 {
-    public class CurrencyViewModel
+    public class Currency
     {
+        public string Id { get; set; }
+
+        public int NumCode { get; set; }
+
         public string CharCode { get; set; }
 
         public int Nominal { get; set; }
@@ -11,6 +16,7 @@ namespace Alfa.Curremcy.Models
 
         public decimal Value { get; set; }
 
+        [JsonProperty("Previous")]
         public decimal PreviousValue { get; set; }
     }
 }

@@ -1,21 +1,22 @@
 ﻿
-@model CurrencySetViewModel
+@model CurrencyListViewModel
+
+<link rel="stylesheet" href="~/css/currency.css" />
 
 <div>
-    <div class="curency-select">
-        <textarea id="id1">PRIVET</textarea>
-        @Html.DropDownListFor(s => s.SelectedCurrencyId, Model.Currencies2, "Select", new { onchange = "GetSelected(this.value)" });
+    <div>
+        <div>@string.Format("Дата последнего обновления: {0}", Model.Date)</div>
+    </div>
+    <div>
+        <div class="select-currency">Выберите валюту:</div>
+        @Html.DropDownListFor(s => s.SelectedCurrencyId, Model.SelectedCurrencyItems, "Выбрать", new { onchange = "GetSelected(this.value)", @class = "currency-select" })
+        @Html.TextBox("SelectedCurrencyValue", null, new { id = "selectedCurrencyValue", @class = "selected-currency-value", disabled = "disabled" })
     </div>
     <div class="container">
-        @if (Model.Valute.Any())
+        @if (Model.Currencies.Any())
         {
-            <div class="currency-items">
-                @foreach (var currency in Model.Valute)
-                {
-                    <div class="currency-item">
-                        @Html.Partial("_currency", currency.Value)
-                    </div>
-                }
+            <div>
+                @Html.Partial("_currenciesList", @Model.Currencies)
             </div>
         }
     </div>
@@ -27,18 +28,17 @@
             $.post("@Url.Action("GetSelected", "Home")?SelectedCurrencyId=" + val,
                 function(res) {
                     if (res.success === "true") {
-                        var s = document.getElementById("id1");
+                        var s = document.getElementById("selectedCurrencyValue");
                         s.value = res.data.value;
                     } else {
-                        var s = document.getElementById("id1");
+                        var s = document.getElementById("selectedCurrencyValue");
                         s.value = "error";
                     }
                 });
         } else {
-            var s = document.getElementById("id1");
+            var s = document.getElementById("selectedCurrencyValue");
             s.value = "";
         }
     }
-
 </script>
 
